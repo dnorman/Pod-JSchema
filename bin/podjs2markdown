@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use strict;
+
+use lib 'lib/';
+use Pod::JSchema;
+
+my $pjs = Pod::JSchema->new( filename => $ARGV[0] );
+
+print "Methods\n";
+print "=======\n\n\n";
+
+foreach my $method (@{ $pjs->methods }){
+    my $m = $method->name;
+    print "$m\n";
+    print (('-' x length($m)) . "\n\n");
+    
+    foreach my $block (@{ $pjs->blocks } ){
+        print $block->markdown;
+    }
+}
