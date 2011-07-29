@@ -15,7 +15,7 @@ foreach my $method (@{ $pjs->methods }){
     print "$m\n";
     print (('-' x length($m)) . "\n\n");
     
-    foreach my $block (@{ $pjs->blocks } ){
+    foreach my $block (@{ $method->blocks } ){
         print $block->markdown;
     }
 }

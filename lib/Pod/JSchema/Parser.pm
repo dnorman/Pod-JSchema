@@ -72,7 +72,7 @@ sub process_sub{
     
     push @{$self->{_methods}}, Pod::JSchema::Method->new(
                                                 name   => $method,
-                                                blocks => (delete $self->{_blocks}) || []
+                                                blocks => ( delete $self->{_blocks} ) || []
                                             );
     
 }
