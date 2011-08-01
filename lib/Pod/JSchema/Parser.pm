@@ -5,12 +5,11 @@ use base 'Pod::Parser';
 
 use Pod::JSchema::Method;
 use Module::Pluggable require => 1, search_path => 'Pod::JSchema::Block', sub_name => 'blockmods';
-use Pod::JSchema::Block::JSCHEMA;
 
 my %BLOCKS;
 BEGIN{
     foreach my $module ( __PACKAGE__->blockmods ){
-        map { $BLOCKS{$_} ||= $module } $module->tags;
+        map { $BLOCKS{lc $_} ||= $module } $module->accept_tags;
     }
 }
 
@@ -35,17 +34,16 @@ sub command {
     }
     
     my $block;
-    use Data::Dumper;
-    print Dumper(\%BLOCKS, $tag);
     
-    if ( my $module = $BLOCKS{ $tag } ){
-        eval{ $block = $module->_parse( $paragraph ) };
+    if ( my $module = $BLOCKS{ lc $tag } ){
+        eval{ $block = $module->_parse( lc($tag), $paragraph ) };
         if ($@){
             warn "parsing ==$command $tag block (line $line_num) failed. Error: $@";
         }
     }
     
     if ( $block ){
+        $self->{_lastblock} = $block;
         push @{ $self->{_blocks}    ||=[] }, $block;
         push @{ $self->{_allblocks} ||=[] }, $block;
     }
@@ -58,7 +56,6 @@ sub preprocess_line{
     if ($textline =~ /\s*sub\s+(\w+)([^{]*){/ ){
         my ($method,$attr) = ($1,$2);
         
-        print STDERR "LINE: $method, $attr\n";
         $self->process_sub( $method, $attr );
         
     }
@@ -83,7 +80,11 @@ sub verbatim {
 }
 
 sub textblock { 
-    my ($parser, $paragraph, $line_num, $pod_para) = @_;
+    my ($self, $paragraph, $line_num, $pod_para) = @_;
+    
+    if ( defined $self->{_lastblock} ){
+        $self->{_lastblock}->add_body( $paragraph );
+    }
     #my $ptree = $parser->parse_text({%options}, $paragraph );
     #$pod_para->parse_tree( $ptree );
     #push @{ $self->{'-paragraphs'} }, $pod_para;

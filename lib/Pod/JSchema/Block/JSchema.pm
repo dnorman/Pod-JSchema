@@ -1,18 +1,19 @@
-package Pod::JSchema::Block::JSCHEMA;
+package Pod::JSchema::Block::JSchema;
 
 use Moose;
 use JSON -support_by_pp;
-use Pod::JSchema::Schema;
+use Pod::JSchema::JsonSchema;
 
 extends 'Pod::JSchema::Block';
 
 has [qw'param_schema return_schema'] => (is => 'ro');
 has method => ( is => 'ro' );
 
-sub tags { qw'JSCHEMA' }
+sub accept_tags { qw'JSCHEMA' }
 
 sub _parse{
     my $pkg  = shift;
+    my $tag  = shift;
     my $json = shift;
     
     my $data = JSON->new->allow_barekey->relaxed->decode( $json );
@@ -26,13 +27,13 @@ sub _parse{
     }
     
     if ($params){
-        $out{param_schema} = Pod::JSchema::Schema->new ( schema => _shorthand_to_jschema_recurse($params) );
+        $out{param_schema} = Pod::JSchema::JsonSchema->new ( schema => _shorthand_to_jschema_recurse($params) );
     }
     if ($return){
-        $out{return_schema} = Pod::JSchema::Schema->new ( schema => _shorthand_to_jschema_recurse($return) );
+        $out{return_schema} = Pod::JSchema::JsonSchema->new ( schema => _shorthand_to_jschema_recurse($return) );
     }
     
-    return __PACKAGE__->new ( \%out );
+    return __PACKAGE__->new ( %out, tag => $tag );
 }
 
 
@@ -80,11 +81,8 @@ sub _shorthand_to_jschema_recurse{
 sub markdown{
     my $self = shift;
     
-    my $out;
-    my $method = ucfirst( $self->method );
-    
-    $out .= "$method\n";
-    $out .= ( ("-" x length($method)) . "\n\n");
+    my $out = '';
+    $out .= "### Schema\n\n";
     
     if ( $self->param_schema ){
         $out .= "Parameters:  \n\n";
@@ -101,6 +99,28 @@ sub markdown{
     return $out;
 }
 
+sub html{
+    my $self = shift;
+    
+    my $out = '';
+    $out .= "<h2>Schema</h2>\n";
+    
+    if ( $self->param_schema ){
+        $out .= qq'</h3 class="paramhead">Parameters:</h3>\n';
+        $out .= '<div class="paramschema">' . "\n";
+        $out .= $self->param_schema->html;
+        $out .= "</div>\n";
+    }
+    
+    if ( $self->return_schema ){
+        $out .= qq'</h3 class="returnhead">Returns:</h3>\n';
+        $out .= '<div class="returnschema">' . "\n";
+        $out .= $self->return_schema->html;
+        $out .= "</div>\n";
+    }
+    
+    return $out;
+}
 
 
 1;

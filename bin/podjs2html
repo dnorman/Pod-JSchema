@@ -7,4 +7,4 @@ use Pod::JSchema;
 
 my $pjs = Pod::JSchema->new( filename => $ARGV[0] );
 
-print $pjs->markdown;
+print $pjs->html;
