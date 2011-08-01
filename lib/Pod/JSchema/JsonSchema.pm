@@ -71,7 +71,7 @@ sub _html_recurse{
     if ($name){
         my $class = $display_types{ $node->{type} } || $node->{type};
         
-        $line = $pad . qq'<li class="key $class">' . encode_entities($name);
+        $line = $pad . qq'<li class="parameter"><span class="key $class">' . encode_entities($name) . '</span>';
         $line .= ' required' if $node->{required};
         $line .= " - $class";
         $line .=  qq'\n$pad$tab<div class="description">' . encode_entities($node->{description} ) . "</div>\n$pad" if defined $node->{description};

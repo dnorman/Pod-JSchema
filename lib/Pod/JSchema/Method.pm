@@ -38,7 +38,7 @@ sub markdown{
 sub html{
     my $self = shift;
     
-    my $out = '';    
+    my $out = qq'<div class="method">\n';    
     foreach my $block (@{ $self->blocks } ){
         $out .= $block->html;
     }
@@ -48,6 +48,7 @@ sub html{
         $out = '<div class="head1">Method: ' . "$name</div>\n" . $out; 
     }
     
+    $out .= qq'</div>\n';
     return $out;
 }
 1;

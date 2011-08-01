@@ -4,7 +4,11 @@ use strict;
 
 use lib 'lib/';
 use Pod::JSchema;
+use Getopt::Long;
 
-my $pjs = Pod::JSchema->new( filename => $ARGV[0] );
+my %opts;
+GetOptions (\%opts, 'css=s');
+
+my $pjs = Pod::JSchema->new( filename => $ARGV[0], css => $opts{css} );
 
 print $pjs->html;

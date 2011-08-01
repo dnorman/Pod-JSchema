@@ -37,10 +37,13 @@ sub html{
     
     my $out;
     my $tag = $self->tag;
-    $out .= qq!<div class="heading $tag">! . encode_entities( $self->title ) . "</div>\n";
-
-    $out .= encode_entities($self->body);
+    $out .= qq!<div class="block $tag block-$tag">\n!;
+    $out .= qq!<div class="heading $tag heading-$tag">! . encode_entities( $self->title ) . "</div>\n";
+    my $body = encode_entities($self->body);
+    $body =~ s/  \n/<br\/>/g; #cheat it with markdown style linebreaks
     
+    $out .= qq'<div class="section $tag section-$tag">$body</div>\n';
+    $out .= "</div> <!-- end block -->\n";
     return $out;
 }
 

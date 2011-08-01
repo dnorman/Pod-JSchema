@@ -103,21 +103,27 @@ sub html{
     my $self = shift;
     
     my $out = '';
-    $out .= "<h2>Schema</h2>\n";
+    $out .= qq!<div class="block jschema block-jschema">\n!;
+    $out .= qq!<div class="heading jschema heading-jschema">Schema</div>\n!;
+
+    $out .= qq!<div class="section jschema section-jschema">\n!;
     
     if ( $self->param_schema ){
-        $out .= qq'</h3 class="paramhead">Parameters:</h3>\n';
-        $out .= '<div class="paramschema">' . "\n";
+        $out .= '<div class="schema param-schema">' . "\n";
+        $out .= qq'<span class="header">Parameters:</span>\n';
         $out .= $self->param_schema->html;
         $out .= "</div>\n";
     }
     
     if ( $self->return_schema ){
-        $out .= qq'</h3 class="returnhead">Returns:</h3>\n';
-        $out .= '<div class="returnschema">' . "\n";
+        $out .= '<div class="schema return-schema">' . "\n";
+        $out .= qq'<span class="header">Returns:</span>\n';
         $out .= $self->return_schema->html;
         $out .= "</div>\n";
     }
+    
+    $out .= "</div>\n";
+    $out .= "</div><!-- end block -->\n";
     
     return $out;
 }

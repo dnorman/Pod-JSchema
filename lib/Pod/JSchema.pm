@@ -9,6 +9,8 @@ has methods  => (is => 'rw');
 has blocks   => (is => 'rw');
 has show_all_methods => ( is => 'rw', default => 0 );
 has render_header    => ( is => 'rw', default => 0 );
+has snippet_only     => ( is => 'rw', default => 0 );
+has css      => ( is => 'rw' );
 
 sub BUILD{
     my $self = shift;
@@ -38,16 +40,25 @@ sub markdown{
 sub html{
      my $self = shift;
     
-    my $out = '<div class="service">' . "\n";
+    my $out = '';
     
-    $out .= "<h2>Methods</h2>\n" if $self->render_header;
+    if (! $self->snippet_only ){
+        $out .= "<html>\n";
+        $out .= '<head><link rel="stylesheet" href="' . $self->css . qq'" /></head>\n' if $self->css;
+        $out .= "<body>\n";
+    }
+    $out .= '<div class="service">' . "\n";
+    $out .= qq'<h2 class="methodheader header">Methods</h2>\n' if $self->render_header;
     
     foreach my $method (@{ $self->methods }){
         next unless $method->tags->{jschema} || $self->show_all_methods;
         $out .= $method->html;
     }
 
-    $out .= "</div>\n"; # class service
+    $out .= "</div><!-- end service div -->\n";
+    
+    $out .= "<body></html>\n" unless $self->snippet_only;
+    
     return $out;
 }
 
