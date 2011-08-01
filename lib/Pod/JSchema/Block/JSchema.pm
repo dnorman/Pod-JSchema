@@ -104,20 +104,20 @@ sub html{
     
     my $out = '';
     $out .= qq!<div class="block jschema block-jschema">\n!;
-    $out .= qq!<div class="heading jschema heading-jschema">Schema</div>\n!;
+    $out .= qq!<div class="heading">Schema</div>\n!;
 
-    $out .= qq!<div class="section jschema section-jschema">\n!;
+    $out .= qq!<div class="section">\n!;
     
     if ( $self->param_schema ){
         $out .= '<div class="schema param-schema">' . "\n";
-        $out .= qq'<span class="header">Parameters:</span>\n';
+        $out .= qq'<span class="heading">Parameters:</span>\n';
         $out .= $self->param_schema->html;
         $out .= "</div>\n";
     }
     
     if ( $self->return_schema ){
         $out .= '<div class="schema return-schema">' . "\n";
-        $out .= qq'<span class="header">Returns:</span>\n';
+        $out .= qq'<span class="heading">Returns:</span>\n';
         $out .= $self->return_schema->html;
         $out .= "</div>\n";
     }
