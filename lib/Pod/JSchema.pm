@@ -11,6 +11,8 @@ has show_all_methods => ( is => 'rw', default => 0 );
 has render_header    => ( is => 'rw', default => 0 );
 has snippet_only     => ( is => 'rw', default => 0 );
 has css      => ( is => 'rw' );
+has html     => ( is => 'ro', lazy_build => 1 );
+has markdown => ( is => 'ro', lazy_build => 1 );
 
 sub BUILD{
     my $self = shift;
@@ -20,7 +22,7 @@ sub BUILD{
     $self->blocks( delete $self->parser->{_allblocks} || [] );
 }
 
-sub markdown{
+sub _build_markdown{
     my $self = shift;
     
     
@@ -37,7 +39,7 @@ sub markdown{
     return $out;
 }
 
-sub html{
+sub _build_html{
      my $self = shift;
     
     my $out = '';
