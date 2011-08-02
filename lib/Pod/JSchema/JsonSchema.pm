@@ -80,7 +80,7 @@ sub _html_recurse{
     if( $node->{type} eq 'object' ){
         if ( %{ $node->{properties} || {} } ){
             $out .= qq'$pad<ul class="object">\n';
-            foreach my $keyname ( keys %{ $node->{properties} } ){
+            foreach my $keyname ( sort { lc($a) cmp lc($b) } keys %{ $node->{properties} } ){
                 my $item = $node->{properties}{ $keyname };
                 $out .= _html_recurse( $item, $keyname, $tier + 1 );
                 

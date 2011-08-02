@@ -52,7 +52,7 @@ sub _build_html{
     $out .= '<div class="service">' . "\n";
     $out .= qq'<h2 class="methodheader header">Methods</h2>\n' if $self->render_header;
     
-    foreach my $method (@{ $self->methods }){
+    foreach my $method ( sort { lc($a->name) cmp lc($b->name) } @{ $self->methods }){
         next unless $method->tags->{jschema} || $self->show_all_methods;
         $out .= $method->html;
     }
