@@ -38,17 +38,17 @@ sub markdown{
 sub html{
     my $self = shift;
     
-    my $out = qq'<div class="method">\n';    
+    my $name = ucfirst( lc($self->name) );
+    my $out = qq'<a name="$name"><div class="method">\n';    
     foreach my $block (@{ $self->blocks } ){
         $out .= $block->html;
     }
     
     if ( !$self->tags->{head1} ){
-        my $name = ucfirst( lc($self->name) );
         $out = '<div class="head1">Method: ' . "$name</div>\n" . $out; 
     }
     
-    $out .= qq'</div>\n';
+    $out .= qq'</div></a>\n';
     return $out;
 }
 1;
