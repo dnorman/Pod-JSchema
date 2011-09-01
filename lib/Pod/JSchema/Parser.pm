@@ -15,6 +15,7 @@ BEGIN{
 
 sub begin_pod {
     my $self = shift;
+    $self->{common} = {};
 }
 
 sub command { 
@@ -36,7 +37,7 @@ sub command {
     my $block;
     
     if ( my $module = $BLOCKS{ lc $tag } ){
-        eval{ $block = $module->_parse( lc($tag), $paragraph ) };
+        eval{ $block = $module->_parse( lc($tag), $paragraph, $self->{common} ) };
         if ($@){
             warn "parsing ==$command $tag block (line $line_num) failed. Error: $@";
         }
