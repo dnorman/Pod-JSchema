@@ -1,7 +1,7 @@
 package Pod::JSchema::Block::JSchema;
 
 use Moose;
-use JSON -support_by_pp;
+use JSON::PP;
 use Pod::JSchema::JsonSchema;
 use Carp;
 
@@ -18,7 +18,7 @@ sub _parse{
     my $json = shift;
     my $common = shift || {};
     
-    my $data = JSON->new->allow_barekey->relaxed->decode( $json );
+    my $data = JSON::PP->new->allow_barekey->relaxed->decode( $json );
     
     if ( uc($tag) eq 'JSCHEMA'){
     
@@ -70,7 +70,7 @@ sub _shorthand_to_jschema_recurse{
         my ($desc) = $parts[0] if scalar(@parts) && length( $parts[0] ) > 9;
         
         $out->{type} = defined $type ? lc($type) : 'string';
-        $out->{required} = JSON::true if ( defined $req );
+        $out->{required} = JSON::PP::true if ( defined $req );
         $out->{description} = $desc if defined $desc;
         
         if ($dt){
