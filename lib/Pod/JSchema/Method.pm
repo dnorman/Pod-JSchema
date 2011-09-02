@@ -5,7 +5,7 @@ use Moose;
 has name   => ( is => 'ro' );
 has tags   => ( is => 'ro', isa => 'HashRef', default => sub { {} } );
 has blocks => ( is => 'ro', isa => 'ArrayRef[Pod::JSchema::Block]', trigger => \&_set_blocks );
-
+use List::Util 'first';
 
 sub _set_blocks{
     my $self = shift;
@@ -18,6 +18,8 @@ sub _set_blocks{
     $self->{tags} = \%TAGS;
     
 }
+
+sub schema  { return first { ref($_) eq 'Pod::JSchema::Block::JSchema' } @{ shift->blocks } }
 
 sub markdown{
     my $self = shift;

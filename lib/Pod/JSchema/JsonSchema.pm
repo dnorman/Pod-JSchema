@@ -9,6 +9,18 @@ my $tab = "  ";
 my %display_types = ( array => 'array of' );
 my %json_nested = ( map { $_ => 1 } qw'array object' );
 
+# THIS IS A HACK
+sub rawlocate{
+    my ($self, $path) = @_;
+    my @path = split('/',$path);
+    
+    my $ref = $self->schema;
+    foreach my $part (@path){
+        (ref($ref) eq 'HASH') && defined($ref->{$part}) or return undef;
+        $ref = $ref->{$part};
+    }
+    return $ref;
+}
 sub markdown{
     my $self = shift;
     
