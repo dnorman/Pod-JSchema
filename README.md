@@ -23,7 +23,7 @@ Example:
         },
         returns: {
             success: "r:boolean",
-            records: ["dt=record"]
+            records: [{ some_other_string: "string" }]
         }
     }
     
