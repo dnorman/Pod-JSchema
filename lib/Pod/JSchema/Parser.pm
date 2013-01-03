@@ -20,7 +20,7 @@ sub begin_pod {
 
 sub command { 
     my ($self, $command, $paragraph, $line_num, $pod_para) = @_;
-    #print "COMMAND '$command'\n";
+    #print STDERR "COMMAND '$command' $self->{_INFILE}\n";
     
     my ($display, $tag);
     
@@ -39,7 +39,7 @@ sub command {
     if ( my $module = $BLOCKS{ lc $tag } ){
         eval{ $block = $module->_parse( lc($tag), $paragraph, $self->{common} ) };
         if ($@){
-            warn "parsing ==$command $tag block (line $line_num) failed. Error: $@";
+            warn "Pod::JSchema - Parsing $self->{_INFILE} failed. ==$command $tag block (line $line_num) contains error: $@";
         }
     }
     
