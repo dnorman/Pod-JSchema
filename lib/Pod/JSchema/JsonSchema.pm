@@ -80,39 +80,36 @@ sub _html_recurse{
     my $line = '';
     my $tab = "    ";
     my $pad = ($tab x ($tier+1));
-    if ($name){
-        my $class = $display_types{ $node->{type} } || $node->{type};
+
+    my $class = $display_types{ $node->{type} } || $node->{type};
         
-        $line = $pad . qq'<li class="parameter"><span class="key $class">' . encode_entities($name) . '</span>';
-        $line .= ' required' if $node->{required};
-        $line .= " - $class";
-        $line .=  qq'\n$pad$tab<div class="description">' . encode_entities($node->{description} ) . "</div>\n$pad" if defined $node->{description};
-    }
-    
+    $line = $pad . qq'<span class="key $node->{type}">' . encode_entities($name) . '</span>' if $name;
+    $line .= ' required' if $node->{required};
+    $line .= " - " if $name;
+    $line .= " $class" if $class ne 'object';
+    $line .=  qq'\n$pad$tab<div class="description">' . encode_entities($node->{description} ) . "</div>\n$pad" if defined $node->{description};
+        
     if( $node->{type} eq 'object' ){
         if ( %{ $node->{properties} || {} } ){
             $out .= qq'$pad<ul class="object">\n';
             foreach my $keyname ( sort { lc($a) cmp lc($b) } keys %{ $node->{properties} } ){
                 my $item = $node->{properties}{ $keyname };
-                $out .= _html_recurse( $item, $keyname, $tier + 1 );
+                $out .= '<li class="parameter">' . _html_recurse( $item, $keyname, $tier + 1 ) . '</li>';
                 
             }
             $out .= "$pad</ul> <!-- end object -->\n";
         }
     }elsif( $node->{type} eq 'array' ){
         my $child = $node->{items};
-        if ( $child && $json_nested{ $child->{type} } ){
+        if ( $child ){
             $out .= qq'\n$pad<div class="array">\n';
             $line .= ':';
             $out .= _html_recurse( $child, '', $tier + 1 );
             $out .= "$pad</div> <!-- end array -->\n";
-        }elsif( $child->{type} ){
-            $line .= qq': <div class="array">$child->{type}s</div>\n';
         }
     }else{
         #$out .= " ---- $node->{type}\n";
     }
     
-    $out .= "</li>\n" if length $line;
     return "$line$out";
 }
